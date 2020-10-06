@@ -1,6 +1,10 @@
-import PIL, random, sys, argparse, math
-from PIL import Image, ImageDraw
+import argparse
+import math
+import random
+
 import noise
+from PIL import Image
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -33,10 +37,9 @@ def main():
 
     for i in range(pil_image.size[0]):
         for j in range(pil_image.size[1]):
-
             # Generates a value from -1 to 1
-            pixel_value = noise.pnoise2((offset+i)/scale,
-                                        (offset+j)/scale,
+            pixel_value = noise.pnoise2((offset + i) / scale,
+                                        (offset + j) / scale,
                                         octaves,
                                         persistence,
                                         lacunarity,
@@ -44,29 +47,23 @@ def main():
                                         height,
                                         base)
 
-            distance_from_center = math.sqrt(math.pow((i - width/2), 2) + math.pow((j - height/2), 2))
-
-            gradient_perc = distance_from_center/max_distance
-
+            distance_from_center = math.sqrt(math.pow((i - width / 2), 2) + math.pow((j - height / 2), 2))
+            gradient_perc = distance_from_center / max_distance
             pixel_value -= math.pow(gradient_perc, 3)
 
-            if (int(pixel_value * 100.0) > 30 - alter):
+            if int(pixel_value * 100.0) > 30 - alter:
                 pixels[i, j] = (240, 240, 240)
-            elif (int(pixel_value * 100.0) > 20 - alter):
+            elif int(pixel_value * 100.0) > 20 - alter:
                 pixels[i, j] = (200, 200, 200)
-            elif (int(pixel_value * 100.0) > 5 - alter):
+            elif int(pixel_value * 100.0) > 5 - alter:
                 pixels[i, j] = (134, 164, 114)
-            elif (int(pixel_value * 100.0) > 0 - alter):
+            elif int(pixel_value * 100.0) > 0 - alter:
                 pixels[i, j] = (236, 212, 184)
             else:
                 pixels[i, j] = (153, 162, 157)
 
-    pil_image.save('Examples/Island-' + str(offset) + '-w-' + str(width) + '-h-' + str(height) + '.png')
+    pil_image.save('dist/island.png')
+
 
 if __name__ == "__main__":
     main()
-
-    # 52 minutes - Definitely my maybe
-    # -> 1:07
-
-    # watch endsceen -> credits

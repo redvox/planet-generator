@@ -1,9 +1,10 @@
-import PIL, random, sys, argparse, math
-from PIL import Image, ImageDraw
-import noise
+import argparse
+import math
+import random
 
-r = lambda: random.randint(30,235)
-rc = lambda: ('#%02X%02X%02X' % (r(),r(),r()))
+import noise
+from PIL import Image
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -35,6 +36,7 @@ def main():
     pixels = pil_image.load()
 
     cl = []
+    r = lambda: random.randint(30, 235)
     for i in range(10):
         cl.append((r(), r(), r()))
 
@@ -42,8 +44,8 @@ def main():
         for j in range(pil_image.size[1]):
 
             # Generates a value from -1 to 1
-            pixel_value = noise.pnoise2((offset+i)/scale,
-                                        (offset+j)/scale,
+            pixel_value = noise.pnoise2((offset + i) / scale,
+                                        (offset + j) / scale,
                                         octaves,
                                         persistence,
                                         lacunarity,
@@ -51,39 +53,32 @@ def main():
                                         height,
                                         base)
 
-            distance_from_center = math.sqrt(math.pow((i - width/2), 2) + math.pow((j - height/2), 2))
-
-            gradient_perc = distance_from_center/max_distance
-
+            distance_from_center = math.sqrt(math.pow((i - width / 2), 2) + math.pow((j - height / 2), 2))
+            gradient_perc = distance_from_center / max_distance
             pixel_value -= math.pow(gradient_perc, 3)
 
-            if (int(pixel_value * 100.0) > 40):
+            if int(pixel_value * 100.0) > 40:
                 pixels[i, j] = cl[5]
-            elif (int(pixel_value * 100.0) > 30):
+            elif int(pixel_value * 100.0) > 30:
                 pixels[i, j] = cl[4]
-            elif (int(pixel_value * 100.0) > 20):
+            elif int(pixel_value * 100.0) > 20:
                 pixels[i, j] = cl[3]
-            elif (int(pixel_value * 100.0) > 10):
+            elif int(pixel_value * 100.0) > 10:
                 pixels[i, j] = cl[2]
-            elif (int(pixel_value * 100.0) > 0):
+            elif int(pixel_value * 100.0) > 0:
                 pixels[i, j] = cl[1]
-            elif (int(pixel_value * 100.0) > -10):
+            elif int(pixel_value * 100.0) > -10:
                 pixels[i, j] = cl[4]
-            elif (int(pixel_value * 100.0) > -20):
+            elif int(pixel_value * 100.0) > -20:
                 pixels[i, j] = cl[3]
-            elif (int(pixel_value * 100.0) > -30):
+            elif int(pixel_value * 100.0) > -30:
                 pixels[i, j] = cl[2]
-            elif (int(pixel_value * 100.0) > -40):
+            elif int(pixel_value * 100.0) > -40:
                 pixels[i, j] = cl[1]
             else:
                 pixels[i, j] = (20, 30, 35)
+    pil_image.save('dist/color.png')
 
-    pil_image.save('Examples/Color-' + str(offset) + '-w-' + str(width) + '-h-' + str(height) + '.png')
 
 if __name__ == "__main__":
     main()
-
-    # 52 minutes - Definitely my maybe
-    # -> 1:07
-
-    # watch endsceen -> credits
